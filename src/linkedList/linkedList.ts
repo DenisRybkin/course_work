@@ -9,7 +9,7 @@ export class LinkedList<T> {
     private head : LinkedListNode<T> | null;
     private tail : LinkedListNode<T> | null;
 
-    length : number;
+    private length : number;
 
     constructor() {
         this.length = 0;
@@ -105,8 +105,7 @@ export class LinkedList<T> {
 
         while (this.head && (byId ? this.head.id : this.head.data) === deleted) {
             deletedNode = this.head;
-
-            this.head = this.head?.next
+            this.head = this.head?.next;
         }
 
         let currentNode = this.head;
@@ -123,7 +122,17 @@ export class LinkedList<T> {
         if ((byId ? this.tail?.id : this.tail?.data) === deleted) {
             this.tail = currentNode;
         }
-
         return deletedNode;
+    }
+
+    multipleDelete(deletedArr : T[] | number[], byId ?: boolean) :  (LinkedListNode<T> | null)[] | (T | null)[] {
+        const deletedItemsById : (LinkedListNode<T> | null)[] = [];
+        const deletedItemsByT : (T | null)[] = [];
+        deletedArr.forEach((deletedItem : T | number) => {
+            if (deletedArr.length === 0) return [];
+            if(typeof deletedItem === "number" && byId) deletedItemsById.push(this.delete(deletedItem as number, true));
+            else deletedItemsByT.push(this.delete(deletedItem)?.data ?? null);
+        });
+        return byId ? deletedItemsById : deletedItemsByT
     }
 }
