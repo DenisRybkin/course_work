@@ -1,15 +1,14 @@
 import {LinkedListNode} from "./linkedListNode";
 import {IdGenerator} from "../utils/idGenerator";
-import {networkInterfaces} from "os";
 
 export class LinkedList<T> {
 
-    private idGenerator : IdGenerator;
+    private idGenerator: IdGenerator;
 
-    private head : LinkedListNode<T> | null;
-    private tail : LinkedListNode<T> | null;
+    private head: LinkedListNode<T> | null;
+    private tail: LinkedListNode<T> | null;
 
-    private length : number;
+    private length: number;
 
     constructor() {
         this.length = 0;
@@ -18,30 +17,30 @@ export class LinkedList<T> {
         this.idGenerator = new IdGenerator(1);
     }
 
-    handleIncrementId() : void {
+    handleIncrementId(): void {
         this.idGenerator.incrementId();
     }
 
-    handleIncrementLength () : void {
+    handleIncrementLength(): void {
         this.length++
     }
 
-    get getLength () : number {
+    get getLength(): number {
         return this.length;
     }
 
-    get getTail() : LinkedListNode<T> | null {
+    get getTail(): LinkedListNode<T> | null {
         return this.tail;
     }
 
-    get getHead() : LinkedListNode<T> | null {
+    get getHead(): LinkedListNode<T> | null {
         return this.head;
     }
 
-    toArray () : LinkedListNode<T>[]{
-        const nodes : LinkedListNode<T>[]  = [];
+    toArray(): LinkedListNode<T>[] {
+        const nodes: LinkedListNode<T>[] = [];
 
-        let currentNode : LinkedListNode<T> | null = this.getHead;
+        let currentNode: LinkedListNode<T> | null = this.getHead;
 
         while (currentNode) {
             nodes.push(currentNode);
@@ -51,17 +50,17 @@ export class LinkedList<T> {
         return nodes;
     }
 
-    toString () : string {
+    toString(): string {
         return this.toArray().map(node => node.toString()).toString();
     }
 
-    append(data : T) : LinkedListNode<T> | null {
+    append(data: T): LinkedListNode<T> | null {
 
-        const newNode = new LinkedListNode(this.idGenerator.getId,data);
+        const newNode = new LinkedListNode(this.idGenerator.getId, data);
         this.handleIncrementId();
         this.handleIncrementLength()
 
-        if(!this.head || !this.tail) {
+        if (!this.head || !this.tail) {
             this.head = newNode;
             this.tail = newNode;
             return newNode;
@@ -71,35 +70,35 @@ export class LinkedList<T> {
         this.tail = newNode; // теперь звост ялвлется последним добавленным эллементом (присваивание по ссылке)
 
         return this.tail;
-    }
+    };
 
-    prepend(data : T) : LinkedListNode<T> | null {
-        const newNode : LinkedListNode<T>  = new LinkedListNode(this.idGenerator.getId,data,this.getHead);
+    prepend(data: T): LinkedListNode<T> | null {
+        const newNode: LinkedListNode<T> = new LinkedListNode(this.idGenerator.getId, data, this.getHead);
 
         this.head = newNode;
 
-        if(!this.getTail) this.tail = newNode;
+        if (!this.getTail) this.tail = newNode;
 
         return newNode;
-    }
+    };
 
-    find(compared : T | number, byId ?: boolean) : LinkedListNode<T> | null {
+    find(compared: T | number, byId ?: boolean): LinkedListNode<T> | null {
 
-        if(!this.getHead) return null;
+        if (!this.getHead) return null;
 
-        let currentNode : LinkedListNode<T> | null = this.getHead;
+        let currentNode: LinkedListNode<T> | null = this.getHead;
 
         while (currentNode) {
-            if((byId ? currentNode.id : currentNode.data) === compared) return currentNode;
+            if ((byId ? currentNode.id : currentNode.data) === compared) return currentNode;
 
             currentNode = currentNode.next;
         }
 
         return null;
-    }
+    };
 
-    delete(deleted : T | number, byId ?: boolean) : LinkedListNode<T> | null {
-        if(!this.getHead) return null;
+    delete(deleted: T | number, byId ?: boolean): LinkedListNode<T> | null {
+        if (!this.getHead) return null;
 
         let deletedNode = null;
 
@@ -110,9 +109,9 @@ export class LinkedList<T> {
 
         let currentNode = this.head;
 
-        if(currentNode !== null) {
+        if (currentNode !== null) {
             while (currentNode.next) {
-                if((byId ? currentNode.next.id : currentNode.next.data) === deleted) {
+                if ((byId ? currentNode.next.id : currentNode.next.data) === deleted) {
                     deletedNode = currentNode.next;
                     currentNode.next = currentNode.next.next;
                 } else currentNode = currentNode.next;
@@ -123,16 +122,51 @@ export class LinkedList<T> {
             this.tail = currentNode;
         }
         return deletedNode;
-    }
+    };
 
-    multipleDelete(deletedArr : T[] | number[], byId ?: boolean) :  (LinkedListNode<T> | null)[] | (T | null)[] {
-        const deletedItemsById : (LinkedListNode<T> | null)[] = [];
-        const deletedItemsByT : (T | null)[] = [];
-        deletedArr.forEach((deletedItem : T | number) => {
+    multipleDelete(deletedArr: T[] | number[], byId ?: boolean): (LinkedListNode<T> | null)[] | (T | null)[] {
+        const deletedItemsById: (LinkedListNode<T> | null)[] = [];
+        const deletedItemsByT: (T | null)[] = [];
+        deletedArr.forEach((deletedItem: T | number) => {
             if (deletedArr.length === 0) return [];
-            if(typeof deletedItem === "number" && byId) deletedItemsById.push(this.delete(deletedItem as number, true));
+            if (typeof deletedItem === "number" && byId) deletedItemsById.push(this.delete(deletedItem as number, true));
             else deletedItemsByT.push(this.delete(deletedItem)?.data ?? null);
         });
         return byId ? deletedItemsById : deletedItemsByT
+    };
+
+
+    copyReference(copingObject: any): LinkedListNode<T> | null {
+        if (typeof copingObject === 'object') {
+            Object.assign(copingObject, this.getHead)
+            return copingObject;
+        }
+        return null
+    };
+
+    extend(exented: LinkedList<T>): LinkedListNode<T> | null {
+        while (exented.head) {
+            this.append(exented.head.data);
+            exented.head = exented.head?.next;
+        }
+        return this.getHead;
+    };
+
+    clear() {
+        this.head = null;
+    };
+    
+    reverse() : LinkedList<T> | null {
+        if (this.head == null) return null;
+        let current, next, prev = null;
+        current = this.head;
+        while (current) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        this.head = prev;
+        return this;
     }
 }

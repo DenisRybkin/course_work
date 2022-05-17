@@ -21,13 +21,24 @@ const queue = new Queue()
 // stack.push(4);
 // stack.push(5);
 // stack.push(6);
-// list.append(1);
-// list.append(2);
-// list.append(3);
-// list.append(4);
-// list.append(5);
-// list.append(6);
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+list.append(6);
 //
-// console.log(list.multipleDelete([2,5]), list.toString());
+
+const newList : any = new LinkedList();
+
+newList.append(7);
+newList.append(8);
+newList.append(9);
+newList.append(10);
+newList.append(11);
+
+// const test = Object.assign({}, {remark : 5})
+// console.log(test);
+console.log(list.reverse()?.toArray().toString())
 // console.log(stack.pop())
-console.log(queue.shift(),queue.shift(),queue.shift(),queue.toString())
+// console.log(queue.shift(),queue.shift(),queue.shift(),queue.toString())
